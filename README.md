@@ -40,33 +40,17 @@ Następnie, dodajemy do naszego heksagonu komponent `Edge Collider 2D` i w liśc
 
 Teraz najważniejszy kawałek - heksagony będą tworzyły się duże, z losowym kątem, po czym będą się zmniejszały. Jeśli heksagon dotknie gracza, gra jest resetowana na początek. Jeśli heksagon uzyska minimalny rozmiar, jest kasowany.
 
+- `using UnityEngine;`
+- `using UnityEngine.SceneManagement;`
+- `transform.Rotate(Vector3.forward, Random.Range(0f, 360f));`
+- `Size -= Speed * Time.deltaTime;`
+- `transform.localScale = Size * Vector3.one;`
+- `Destroy(gameObject);`
+
 ```csharp
-using UnityEngine;
-using UnityEngine.SceneManagement;
-
-public class HexagonScript : MonoBehaviour
+private void OnTriggerEnter2D(Collider2D collider)
 {
-    private float Size = 10;
-    public float Speed = 5.0f;
-
-    private void Start()
-    {
-        transform.localScale = Vector3.one * Size;
-        transform.Rotate(Vector3.forward, Random.Range(0f, 360f));
-    }
-
-    private void Update()
-    {
-        Size -= Speed * Time.deltaTime;
-        transform.localScale = Size * Vector3.one;
-        if (Size < 0.1f) Destroy(gameObject);
-    }
-
-
-    private void OnTriggerEnter2D(Collider2D collider)
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
+SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 }
 ```
 
@@ -74,27 +58,7 @@ public class HexagonScript : MonoBehaviour
 
 Gra z jednym heksagonem jest dość nudna. Dlatego stworzymy obiekt spawnujący w określonych odcinkach czasu kolejne heksagony. Wybieramy opcję `Create Empty` z listy obiektów i dodajemy mu `SpawnerScript`:
 
-```csharp
-using UnityEngine;
-
-public class SpawnerScript : MonoBehaviour
-{
-    public GameObject HexagonGameObject;
-    public float Timer = 3.0f;
-
-    private float timeToSpawn;
-
-    private void Update()
-    {
-        if (timeToSpawn <= 0)
-        {
-            timeToSpawn = Timer;
-            Instantiate(HexagonGameObject, Vector3.zero, Quaternion.identity);
-        }
-        timeToSpawn -= Time.deltaTime;
-    }
-}
-```
+- `Instantiate(HexagonGameObject, Vector3.zero, Quaternion.identity);`
 
 ## Timer
 
